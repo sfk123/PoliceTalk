@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sil_item_swipe_root"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    app:bga_sil_bottomMode="pullOut"
+    app:bga_sil_springDistance="20dp"
+    app:bga_sil_swipeDirection="left">
+    <include layout="@layout/swipe_menu_view" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.sheng.android.policetalk.view.RoundImageView
+            android:id="@+id/img_head"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:type="circle" >
+        </com.sheng.android.policetalk.view.RoundImageView>
+        <TextView
+            android:id="@+id/tv_item"
+            android:layout_toRightOf="@id/img_head"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:layout_height="60dp" />
+        <TextView
+            android:id="@+id/bar_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/red_dot_bg"
+            android:text="5"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="13dp" />
+    </RelativeLayout>
+</cn.bingoogolapple.swipeitemlayout.BGASwipeItemLayout>

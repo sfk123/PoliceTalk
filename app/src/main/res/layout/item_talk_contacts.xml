@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.sheng.android.policetalk.view.RoundImageView
+        android:id="@+id/img_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:src="@mipmap/head_offline"
+        app:type="circle" >
+    </com.sheng.android.policetalk.view.RoundImageView>
+    <TextView
+        android:id="@+id/tv_item"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="60dp" />
+</LinearLayout>

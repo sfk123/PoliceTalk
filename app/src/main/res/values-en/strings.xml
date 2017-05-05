@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">Intercom</string>
+    <string name="message">Message</string>
+    <string name="contacts">Contacts</string>
+    <string name="setting">Settings</string>
+    <string name="sys_notice">System notice</string>
+    <string name="check_network">Please use this program after networking！</string>
+    <string name="btn_determine">OK</string>
+    <string name="login_expired">Login has expired, please log in again</string>
+    <string name="current_user_delete">The current user is deleted, please log in again</string>
+    <string name="connect_time_out">Connection timed out, please try again</string>
+    <string name="connecting">connecting server...</string>
+    <string name="connect_wait">connection, please later...</string>
+    <!--登录activity-->
+    <string name="hint_username">enter one user name</string>
+    <string name="hint_pwd">input password</string>
+    <string name="tv_remeber">remember password</string>
+    <string name="btn_login">Login</string>
+    <string name="check_user_name">enter one user name！</string>
+    <string name="check_pwd">please input a password！</string>
+    <!--fragment-contacts-->
+    <string name="grouplist">Group list</string>
+    <string name="all_member">All personnel</string>
+    <!--fragment-settings-->
+    <string name="current_username">Current account</string>
+    <string name="modify_pwd">Modify password</string>
+    <string name="clear">Clear record</string>
+    <string name="change_language">Change Language</string>
+    <string name="volume_amplification">Volume amplification</string>
+    <string name="btn_exit">Exit login</string>
+    <string name="exit_confirm">No voice messages will be accepted after exit！</string>
+    <string name="btn_cancel">cancel</string>
+    <string name="clear_confirm">Make sure all voice records are empty？</string>
+    <string name="sethead">Set Avatar</string>
+    <string name="language_change">Language switching</string>
+    <string name="picture_from">Select image source</string>
+
+    <string name="pwd_current">Please enter the current password</string>
+    <string name="pwd_new">Please enter a new password</string>
+    <string name="pwd_new_re">Please repeat the new password</string>
+    <string name="pwd_not_equal">Password input inconsistent！</string>
+    <string name="btn_submit">Submit</string>
+    <!--fragment-message-->
+    <string name="toast_target_not_online">The other party is not online, can not initiate dialogue</string>
+    <!--service-->
+    <string name="no_sdcard">If the machine does not have a memory card, it will not be saved</string>
+    <string name="line_busy">The line is busy, please try again later！</string>
+    <string name="login_other"> The current account is logged in elsewhere！</string>
+    <string name="connect_close">Network disconnected, please log in again！</string>
+    <!--group talk activity-->
+    <string name="no_promis_add_user">You do not have permission to add members</string>
+
+    <string name="speeking">Talking</string>
+    <string name="free">free</string>
+    <string name="go_out">You have been removed by the administrator</string>
+    <string name="no_more">No more records</string>
+    <string name="not_me">Can not choose their own dialogue</string>
+    <string name="target_not_online">The other party is not online！</string>
+    <string name="touch_talk">Hold to talk</string>
+
+    <string name="group_member">group members</string>
+    <string name="group_member_add">Add member</string>
+    <string name="delete">delete</string>
+    <string name="btn_add">Add</string>
+    <string name="loading">loading...</string>
+</resources>

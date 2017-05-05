@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:drawable="@mipmap/ico_sound1_right"
+        android:duration="300">
+    </item>
+    
+    <item
+        android:drawable="@mipmap/ico_sound2_right"
+        android:duration="300">
+    </item>
+    
+    <item
+        android:drawable="@mipmap/ico_sound_right"
+        android:duration="300">
+    </item>
+
+</animation-list>

@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">对讲机</string>
+    <string name="message">消息</string>
+    <string name="contacts">联系人</string>
+    <string name="setting">设置</string>
+    <string name="sys_notice">系统提示</string>
+    <string name="check_network">请联网后使用本程序！</string>
+    <string name="btn_determine">确定</string>
+    <string name="login_expired">登录已过期，请重新登录</string>
+    <string name="current_user_delete">当前用户被删除，请重新登录</string>
+    <string name="connect_time_out">连接超时，请重试</string>
+    <string name="connecting">正在连接服务器...</string>
+    <string name="connect_wait">连接中,请稍后...</string>
+
+    <!--登录activity-->
+    <string name="hint_username">输入用户名</string>
+    <string name="hint_pwd">输入密码</string>
+    <string name="tv_remeber">记住密码</string>
+    <string name="btn_login">登     录</string>
+    <string name="check_user_name">请输入用户名！</string>
+    <string name="check_pwd">请输入密码！</string>
+
+    <!--fragment-contacts-->
+    <string name="grouplist">群组列表</string>
+    <string name="all_member">所有人员</string>
+
+    <!--fragment-settings-->
+    <string name="current_username">当前账号</string>
+    <string name="modify_pwd">修改密码</string>
+    <string name="clear">清空记录</string>
+    <string name="change_language">中英切换</string>
+    <string name="volume_amplification">音量放大</string>
+    <string name="btn_exit">退出登录</string>
+    <string name="exit_confirm">退出后，将不再接受语音消息！</string>
+    <string name="btn_cancel">取消</string>
+    <string name="clear_confirm">确定清空所有语音记录？</string>
+    <string name="sethead">设置头像</string>
+    <string name="language_change">语言切换</string>
+    <string name="picture_from">选择图片来源</string>
+
+    <string name="pwd_current">请输入当前密码</string>
+    <string name="pwd_new">请输入新密码</string>
+    <string name="pwd_new_re">请重复新密码</string>
+    <string name="pwd_not_equal">密码输入不一致！</string>
+    <string name="btn_submit">提   交</string>
+    <!--fragment-message-->
+    <string name="toast_target_not_online">对方不在线，不可发起对话</string>
+    <!--service-->
+    <string name="no_sdcard">检测到本机没有内存卡，语音记录将无法保存</string>
+    <string name="line_busy">线路忙，请稍后再试！</string>
+    <string name="login_other">当前账号已在别的地方登录！</string>
+    <string name="connect_close">网络断开，请重新登录！</string>
+    <!--group talk activity-->
+    <string name="no_promis_add_user">您没有权限添加成员</string>
+
+    <string name="speeking">正在说话</string>
+    <string name="free">空闲</string>
+    <string name="go_out">您已被管理员移除该组</string>
+    <string name="no_more">没有更多记录了</string>
+    <string name="not_me">不能选择自己对话</string>
+    <string name="target_not_online">对方不在线！</string>
+    <string name="touch_talk">按住说话</string>
+
+    <string name="group_member">群组成员</string>
+    <string name="group_member_add">添加成员</string>
+    <string name="delete">删除</string>
+    <string name="btn_add">添   加</string>
+    <string name="loading">加载中，请稍后...</string>
+</resources>
