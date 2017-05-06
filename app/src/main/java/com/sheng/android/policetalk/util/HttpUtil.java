@@ -38,9 +38,9 @@ public class HttpUtil {
     private  HttpUtil(){
         cookieJar=new MyCookie(URLConfig.getHostForCookie());
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .cookieJar(cookieJar);
         httpClient=builder.build();
     }

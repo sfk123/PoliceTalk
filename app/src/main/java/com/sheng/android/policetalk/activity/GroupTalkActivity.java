@@ -413,7 +413,7 @@ public class GroupTalkActivity extends AppCompatActivity implements View.OnClick
     @Subscriber(tag = "RecorderBack")
     private void MediaRecorder(EventModal event){//自己语音文件录制完成
         long time=Long.parseLong(event.getType());
-        if(time/1000==0)
+        if(time<600)
             return;
         Voice_Message group_message=new Voice_Message();
         group_message.setRead(true);

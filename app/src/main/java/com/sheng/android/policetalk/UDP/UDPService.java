@@ -23,6 +23,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Administrator on 2017/3/10.
@@ -36,7 +37,7 @@ public class UDPService {
     private InetAddress ip;
     private int port;
     private boolean isInitOK=false,isRunning=true;
-    private boolean stopTalk=false;
+    private AtomicBoolean stopTalk=new AtomicBoolean(false);
     private int currentID,groupID;
     private UDPBeatService udpBeatService;
     private Selector selector;
@@ -126,20 +127,20 @@ public class UDPService {
         return isInitOK;
     }
     public void stopOK(){
-        stopTalk=false;
+        stopTalk.set(false);
     }
     public void stopTalk(){
-        if(stopTalk||type.equals("init_single")) {//单聊时不需要发送停止信号
+        if(stopTalk.compareAndSet(false, true)||type.equals("init_single")) {//单聊时不需要发送停止信号
             if(type.equals("init_single")){
                 System.out.println("单聊 不发送停止信息");
             }
             return;
         }
-        stopTalk=true;
+        stopTalk.set(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(stopTalk&&channel!=null) {//若没有初始化成功 则重复发送
+                while(stopTalk.compareAndSet(true, true)&&channel!=null) {//若没有初始化成功 则重复发送
                     JSONObject json = new JSONObject();
                     json.put("type", "stopTalk");
                     json.put("target_id", groupID);
@@ -147,10 +148,12 @@ public class UDPService {
                     try {
                         byte[] data = (json.toJSONString()).getBytes();
                         System.out.println("----------------------------停止说话");
-                        if(channel!=null) {
-                            channel.write(ByteBuffer.wrap(data));
-                        }else{
-                            break;
+                        synchronized (channel) {
+                            if (channel != null) {
+                                channel.write(ByteBuffer.wrap(data));
+                            } else {
+                                break;
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -257,23 +260,23 @@ public class UDPService {
             }
         }).start();
     }
-    private boolean prepareTalk=true;
+    private AtomicBoolean prepareTalk=new AtomicBoolean(false);
     public void stopPrepare(boolean status){
-        prepareTalk=false;
+        prepareTalk.set(false);
         EventModal eventModal=new EventModal();
         eventModal.setType("back");
         eventModal.setData(status);
         EventBus.getDefault().post(eventModal, "prepareTalk");
     }
     public void stopPrepare(){
-        prepareTalk=false;
+        prepareTalk.set(false);
     }
     public void prepareTalk(){
-        prepareTalk=true;
+        prepareTalk.getAndSet(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(prepareTalk&&isRunning) {//若没有初始化成功 则重复发送
+                while(prepareTalk.compareAndSet(true, true)&&isRunning) {//若没有初始化成功 则重复发送
                     JSONObject json = new JSONObject();
                     json.put("type", "prepareTalk");
                     json.put("target_id", groupID);
@@ -284,7 +287,9 @@ public class UDPService {
 //                        dataPacket.setData(data);
                         System.out.println("----------------------------prepareTalk");
 //                        socket.send(dataPacket);
-                        channel.write(ByteBuffer.wrap(data));
+                        synchronized (channel) {
+                            channel.write(ByteBuffer.wrap(data));
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

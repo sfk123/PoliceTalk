@@ -239,7 +239,7 @@ public class FragmentMessage extends Fragment implements View.OnClickListener,Sw
         else
             conversation.setUnread_count(commonUtils.getUnredCountOfConversation(user.getId(), conversation.getTarget_id(),1));
         adapter.add(conversation);
-
+        conversations=commonUtils.getConversationList(user.getId());
         System.out.println("更新视图--------------------------");
         adapter.notifyDataSetChanged();
     }
@@ -414,6 +414,14 @@ public class FragmentMessage extends Fragment implements View.OnClickListener,Sw
 
     @Override
     public void onItemClick(int position) {
+        if(conversations==null){
+            conversations=commonUtils.getConversationList(user.getId());
+        }
+        if(conversations==null||conversations.size()==0){
+            if(getContext()!=null)
+                Toast.makeText(getContext(),"会话列表为空",Toast.LENGTH_SHORT).show();
+            return;
+        }
         Conversation conversation=conversations.get(position);
         if(conversation.getType().equals("group")){
             Group group=getGroup(conversation.getTarget_id());

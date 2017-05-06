@@ -44,9 +44,13 @@ public class AudioSender implements Runnable {
         AudioData encodedData = new AudioData();
         encodedData.setSize(size);
         byte[] tempData = new byte[size];
-        System.arraycopy(data, 0, tempData, 0, size);
-        encodedData.setRealData(tempData);
-        dataList.add(encodedData);
+        try {
+            System.arraycopy(data, 0, tempData, 0, size);
+            encodedData.setRealData(tempData);
+            dataList.add(encodedData);
+        }catch (Exception e){
+
+        }
     }
 
     // 发送数据
@@ -78,9 +82,13 @@ public class AudioSender implements Runnable {
     // run
     public void run() {
         while (isSendering) {
-            if (dataList.size() > 0) {
-                AudioData encodedData = dataList.remove(0);
-                sendData(encodedData.getRealData(), encodedData.getSize());
+            try {
+                if (dataList.size() > 0) {
+                    AudioData encodedData = dataList.remove(0);
+                    sendData(encodedData.getRealData(), encodedData.getSize());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         System.out.println(LOG + "发送结束");

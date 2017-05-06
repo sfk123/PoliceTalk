@@ -22,6 +22,7 @@ import com.sheng.android.policetalk.util.MyUtil;
 import com.sheng.android.policetalk.view.RoundImageView;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +43,7 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.ViewHo
     private int voice_min_width;//最小语音条宽度
     private int voice_width_step;//每秒增加宽度，满宽按60计算
     private SimpleDateFormat dateFormat;
+    private DecimalFormat df;
     public Adapter_Message(Context context, List<?> dataList,User user, View.OnClickListener clickListener,Group group){
         this.context=context;
         this.mInflater=LayoutInflater.from(context);
@@ -56,6 +58,7 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.ViewHo
         this.group=group;
         dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Sort();
+        df = new DecimalFormat("#.##");
     }
     public void setMessageList(List<?> dataList,Group group){
         this.dataList=dataList;
@@ -152,15 +155,18 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.ViewHo
 //            holder.img_head_right.setImageResource(R.mipmap.head_current);
             holder.img_head_left.setVisibility(View.INVISIBLE);
             holder.tv_name.setVisibility(View.GONE);
-            int minute=item.getVoice_length()/1000/60;
-            int second=item.getVoice_length()/1000;
-            String second_str;
-            if(minute==0){
-                second_str=second+"''";
-            }else{
-                second=second-minute*60;
-                second_str=minute+"'"+second+"''";
-            }
+//            int minute=item.getVoice_length()/1000/60;
+            int second;
+
+            double ms=(double)item.getVoice_length()/1000;
+            System.out.println("声音长度："+ms);
+            String second_str=df.format(ms)+"'";
+//            if(minute==0){
+//                second_str=second+"''";
+//            }else{
+//                second=second-minute*60;
+//                second_str=minute+"'"+second+"."+ms+"''";
+//            }
             //DateFormat.format("yyyy-MM-dd HH:mm:ss",((Group_Message) item).getDate_time().getTime())+
             holder.tv_second.setText(second_str);
 //                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");

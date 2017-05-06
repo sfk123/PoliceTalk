@@ -83,6 +83,7 @@ public class WebSocketService extends Service implements HttpCallBack {
     private Boolean prepareRecoard=false;
     private Lock lock;
     private final int http_false=1;
+    public final static int prepareRecordOK=2;
     private String path;//语音文件存储路径
     private Resources res;
     private boolean isChina=true;
@@ -91,6 +92,9 @@ public class WebSocketService extends Service implements HttpCallBack {
             switch (msg.what) {
                 case http_false:
                     Toast.makeText(getApplicationContext(),msg.obj.toString(),Toast.LENGTH_SHORT).show();
+                    break;
+                case prepareRecordOK:
+                    mediaPlayer.start();
                     break;
             }
             super.handleMessage(msg);
@@ -112,14 +116,15 @@ public class WebSocketService extends Service implements HttpCallBack {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<开始说话");
+                AudioWrapper.getInstance().prepareOkStartRecord();
                 if(prepareRecoard) {
-                    AudioWrapper.getInstance().startRecord();
-                    SocketModel data = new SocketModel();
-                    data.setClientID(user.getId());
-                    data.setGroup_id(target_id);
-                    data.setType("start_talk_single");
-                    WebSocketConnection.getInstence().sendMessage(data);
+                    if(type.equals("single")) {
+                        SocketModel data = new SocketModel();
+                        data.setClientID(user.getId());
+                        data.setGroup_id(target_id);
+                        data.setType("start_talk_single");
+                        WebSocketConnection.getInstence().sendMessage(data);
+                    }
                 }else{
                     System.out.println("已经停止");
                 }
@@ -301,7 +306,7 @@ public class WebSocketService extends Service implements HttpCallBack {
             boolean status=(boolean)event.getData();
             if(status){
                 if(prepareRecoard)
-                    mediaPlayer.start();
+                    AudioWrapper.getInstance().startRecord(myHandler);
                 else{
                     System.out.println("已经停止说话");
                 }
@@ -334,11 +339,12 @@ public class WebSocketService extends Service implements HttpCallBack {
     @Subscriber(tag = "RecorderBack")
     private void MediaRecorder(EventModal event){//语音文件录制完成
         long time=Long.parseLong(event.getType());
-        if(time/1000==0) {//小于1秒的不算
+        if(time<600) {//小于1秒的不算
             File file=new File(event.getData().toString());
             if (file.exists()){
                 file.delete();
             }
+            Toast.makeText(this,"声音太短了",Toast.LENGTH_SHORT).show();
             return;
         }
         if(target_id==0)
@@ -351,13 +357,16 @@ public class WebSocketService extends Service implements HttpCallBack {
                 conversation.setTarget_id(target_id);
         //            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 if (commonUtils.addConversation(conversation)) {
-        //                System.out.println("添加会话列表完成");
+                        System.out.println("添加会话列表完成");
+                }else{
+                    System.out.println("添加会话列表失败");
                 }
-
                 EventModal eventModal=new EventModal();
                 eventModal.setData(conversation);
                 eventModal.setType("add");
                 EventBus.getDefault().post(eventModal, "updateConversation");
+            }else{
+                System.out.println("已存在会话列表！");
             }
             Voice_Message group_message = new Voice_Message();
             group_message.setRead(true);
@@ -488,7 +497,7 @@ public class WebSocketService extends Service implements HttpCallBack {
     private void UDP_init_single(EventModal event) {
         System.out.println("UDP_single---------------------------->here");
         if(event.getType().equals("UDP_init_single_back")){//UDP初始化返回，对方没有打开和自己的聊天窗口
-            AudioEncoder.getInstance().setSingle(true);
+//            AudioEncoder.getInstance().setSingle(true);
             AudioWrapper.getInstance().InitOK();
         }else if(event.getType().equals("goaway_single")){
             SocketModel  data=(SocketModel)event.getData();

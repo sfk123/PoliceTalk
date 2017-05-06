@@ -311,7 +311,13 @@ public class MainActivity extends AppCompatActivity implements PageChange,HttpCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        try {
+            setContentView(R.layout.activity_main);
+        }catch (Exception e){
+            Intent intent=new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
         ButterKnife.bind(this);
         user=getIntent().getParcelableExtra("user");
         fragmentList = new ArrayList<>();

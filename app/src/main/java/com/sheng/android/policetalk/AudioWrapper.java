@@ -1,6 +1,8 @@
 package com.sheng.android.policetalk;
 
 
+import android.os.Handler;
+
 import com.sheng.android.policetalk.Record.AudioRecorder;
 import com.sheng.android.policetalk.UDP.UDPBeatService;
 import com.sheng.android.policetalk.UDP.UDPService;
@@ -37,10 +39,12 @@ public class AudioWrapper {
 	public Boolean isInitOK(){
 		return UDPService.getInstence().isInitOK();
 	}
-	public void startRecord() {
-		audioRecorder.startRecording();
+	public void startRecord(Handler handler) {
+		audioRecorder.startRecording(handler);
 	}
-
+	public void prepareOkStartRecord(){
+		audioRecorder.prepareOkStartRecord();
+	}
 	public void stopRecord(boolean isGoaway) {
 			audioRecorder.stopRecording();
 		if(!isGoaway)

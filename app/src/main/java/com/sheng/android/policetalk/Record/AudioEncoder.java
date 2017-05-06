@@ -5,12 +5,15 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.sheng.android.policetalk.AudioData;
 import com.sheng.android.policetalk.MyConfig;
 import com.sheng.android.policetalk.UDP.UDPService;
 import com.sheng.android.policetalk.modal.EventModal;
+import com.sheng.android.policetalk.service.WebSocketService;
 
 import org.simple.eventbus.EventBus;
 
@@ -28,6 +31,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import xmu.swordbearer.audio.AudioCodec;
 
@@ -39,14 +43,14 @@ public class AudioEncoder implements Runnable {
     String LOG = "AudioEncoder";
 
     private static AudioEncoder encoder;
-    private boolean isEncoding = false;
-    private boolean isSingle=false;//单聊时，若对方没开启与自己的聊天窗口，则不发送数据
+    private AtomicBoolean isEncoding = new AtomicBoolean(false);
     private AudioSender sender;
 
     private List<AudioData> dataList = null;// 存放数据
     private FileOutputStream file_output;
     private File dir;
     private long startTime;
+    private Handler handler;
     public static AudioEncoder getInstance() {
         if (encoder == null) {
             synchronized (AudioEncoder.class) {
@@ -78,20 +82,20 @@ public class AudioEncoder implements Runnable {
     }
 
     // 开始编码
-    public void startEncoding() {
-        if (isEncoding) {
+    public void startEncoding(Handler handler) {
+        if (isEncoding.compareAndSet(true,true)) {
             Log.e(LOG, "编码器已经启动，不能再次启动");
             return;
         }
+        this.handler=handler;
         new Thread(this).start();
     }
-
+    public void prepareOK(){
+        startTime=new Date().getTime();
+    }
     // 结束
     public void stopEncoding() {
-        this.isEncoding = false;
-    }
-    public void setSingle(boolean isSingle){
-        this.isSingle=isSingle;
+        this.isEncoding.set(false);
     }
     public void stopSender(){
         sender.stopSending();
@@ -110,49 +114,61 @@ public class AudioEncoder implements Runnable {
             file = new File(dir.getAbsolutePath()+"/PTT",UUID.randomUUID().toString() + ".amr");
             try {
                 file_output = new FileOutputStream(file,true);
-                startTime=new Date().getTime();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }else{
             System.out.println("没有内存卡，不能保存文件");
         }
-        isEncoding = true;
         System.out.println(LOG + "解码线程启动");
-        while (isEncoding) {
-            if (dataList.size() == 0) {
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                continue;
-            }
-//            System.out.println("编码");
-            if (isEncoding) {
-                AudioData rawData = dataList.remove(0);
-
-                encodedData = new byte[rawData.getSize()];
-                //
-                encodeSize = AudioCodec.audio_encode(rawData.getRealData(), 0,
-                        rawData.getSize(), encodedData, 0);
-//                System.out.println("encodeSize:"+encodeSize);
-                if (encodeSize > 0) {
-                    if(sender!=null)
-                        sender.addData(encodedData, encodeSize);
-                    else{
-                        System.out.println("sender is null");
+        Message message=new Message();
+        message.what= WebSocketService.prepareRecordOK;
+        handler.sendMessage(message);
+        isEncoding.set(true);
+        while (isEncoding.compareAndSet(true,true)) {
+            try {
+                if (dataList.size() == 0) {
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    if(file_output!=null){
+                    continue;
+                }
+//            System.out.println("编码");
+                synchronized (isEncoding) {
+                    if (isEncoding.compareAndSet(true, true)) {
+                        AudioData rawData = dataList.remove(0);
+
+                        encodedData = new byte[rawData.getSize()];
+                        //
                         try {
-                            file_output.write(encodedData.clone(),0,encodeSize);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            encodeSize = AudioCodec.audio_encode(rawData.getRealData(), 0,
+                                    rawData.getSize(), encodedData, 0);
+                        } catch (Exception e) {
+                            Log.e("AudioEncoder", "-->:" + e.getMessage());
+                        }
+//                System.out.println("encodeSize:"+encodeSize);
+                        if (encodeSize > 0) {
+                            if (sender != null)
+                                sender.addData(encodedData, encodeSize);
+                            else {
+                                System.out.println("sender is null");
+                            }
+                            if (file_output != null) {
+                                try {
+                                    file_output.write(encodedData.clone(), 0, encodeSize);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            // 清空数据
+                            encodedData = new byte[encodedData.length];
                         }
                     }
-                    // 清空数据
-                    encodedData = new byte[encodedData.length];
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         try {
@@ -165,9 +181,14 @@ public class AudioEncoder implements Runnable {
         file_output = null;
         if(file!=null) {
             EventModal eventModal = new EventModal();
-            eventModal.setType(String.valueOf(new Date().getTime() - startTime));
-            eventModal.setData(file.getAbsolutePath());
-            EventBus.getDefault().post(eventModal, "RecorderBack");
+            long time=new Date().getTime() - startTime;
+            if(time>600) {
+                eventModal.setType(String.valueOf(time));
+                eventModal.setData(file.getAbsolutePath());
+                EventBus.getDefault().post(eventModal, "RecorderBack");
+            }else{
+                file.delete();
+            }
         }
         startTime=0;
         System.out.println(LOG + "编码结束");
