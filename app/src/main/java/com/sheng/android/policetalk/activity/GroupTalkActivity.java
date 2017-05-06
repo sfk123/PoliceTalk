@@ -678,8 +678,7 @@ public class GroupTalkActivity extends AppCompatActivity implements View.OnClick
             getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
             int statusBarHeight = frame.top;
             int actionBarHeight = getSupportActionBar().getHeight();
-            popupGroupMember=new PopupGroupMember(this,statusBarHeight+actionBarHeight,this,group,this);
-            popupGroupMember.setCurrentUser(user);
+            popupGroupMember=new PopupGroupMember(this,statusBarHeight+actionBarHeight,this,group,this,user);
             popupGroupMember.show(actionBar_view);
         }else if(v.getId()==R.id.layout_add_member){
             boolean cando=false;

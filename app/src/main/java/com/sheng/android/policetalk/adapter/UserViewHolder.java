@@ -45,7 +45,6 @@ public class UserViewHolder extends BaseViewHolder<User> implements View.OnClick
         tv_item_swipe_delete = $(R.id.tv_item_swipe_delete);
         itemLayout=$(R.id.sil_item_swipe_root);
         grayColorFilter=new ImgGrayTransformation();
-
         tv_item_swipe_delete.setText(res.getString(R.string.delete));
     }
     @Override

@@ -46,6 +46,8 @@ import com.sheng.android.policetalk.util.HttpCallBack;
 import com.sheng.android.policetalk.util.HttpUtil;
 import com.sheng.android.policetalk.util.MyUtil;
 import com.sheng.android.policetalk.view.CustomViewPager;
+import com.sheng.android.policetalk.view.RoundImageView;
+import com.squareup.picasso.Picasso;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements PageChange,HttpCa
     TextView tv_contacts;
     @Bind(R.id.tv_message)
     TextView tv_message;
+    TextView tv_name;
+    private RoundImageView img_back;
     private TextView tv_title;
     private ArrayList<Fragment> fragmentList;
     private FragmentContacts fragmentContacts;
@@ -327,7 +331,9 @@ public class MainActivity extends AppCompatActivity implements PageChange,HttpCa
         ActionBar actionBar=getSupportActionBar();
         actionBar.setCustomView(R.layout.actionbar_title);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.getCustomView().findViewById(R.id.img_back).setVisibility(View.GONE);
+        img_back=(RoundImageView) actionBar.getCustomView().findViewById(R.id.img_back);
+        img_back.setVisibility(View.GONE);
+        tv_name=(TextView)actionBar.getCustomView().findViewById(R.id.tv_name);
         tv_title=(TextView)actionBar.getCustomView().findViewById(R.id.tv_title);
 
         changeLanguage(null);
@@ -397,6 +403,8 @@ public class MainActivity extends AppCompatActivity implements PageChange,HttpCa
     @Override
     public void onPageSelected(int currentIndex) {
         if(currentIndex==0){
+            img_back.setVisibility(View.GONE);
+            tv_name.setVisibility(View.GONE);
             tv_title.setText(res.getText(R.string.message));
             img_message.setImageResource(R.mipmap.message_on);
             tv_message.setTextColor(getResources().getColor(R.color.button_color));
@@ -414,7 +422,17 @@ public class MainActivity extends AppCompatActivity implements PageChange,HttpCa
             img_settings.setImageResource(R.mipmap.setting);
             tv_settings.setTextColor(getResources().getColor(R.color.text_normal));
             viewpager.setScanScroll(true);
+            tv_name.setText(user.getUsername());
+            tv_name.setVisibility(View.VISIBLE);
+            img_back.setVisibility(View.VISIBLE);
+            if(user.getPhoto()==null||user.getPhoto().equals("")) {
+                img_back.setImageResource(R.mipmap.head_online);
+            }else{
+                Picasso.with(this).load(URLConfig.getHeadPhoto(user.getPhoto())).placeholder(R.mipmap.head_online).into(img_back);
+            }
         }else if(currentIndex==2){
+            img_back.setVisibility(View.GONE);
+            tv_name.setVisibility(View.GONE);
             tv_title.setText(res.getText(R.string.setting));
             img_message.setImageResource(R.mipmap.message);
             tv_message.setTextColor(getResources().getColor(R.color.text_normal));

@@ -43,6 +43,7 @@ public class IdeasExpandableListAdapter extends BaseExpandableListAdapter {
     private List<Group> groups;
     private ImgGrayTransformation grayColorFilter;
     private Resources res;
+    private User user;//自己
     public IdeasExpandableListAdapter(Context context,List<Group> groups) {
         this.mContext = context;
         this.groups = groups;
@@ -106,10 +107,13 @@ public class IdeasExpandableListAdapter extends BaseExpandableListAdapter {
         String name;
         if(groupPosition==0){
             System.out.println("----------------------------------------");
+            int onlineCount=0;
             for(User u:groups.get(childPosition).getMambers()){
                 System.out.println("name:"+u.getUsername());
+                if(u.getOnline())
+                    onlineCount++;
             }
-            name=groups.get(childPosition).getName()+"  (<font color='#f86964'>"+groups.get(childPosition).getMambers().size()+"人</font>)";
+            name=groups.get(childPosition).getName()+"  (<font color='#f86964'>"+groups.get(childPosition).getMambers().size()+"人</font> / "+onlineCount+"人在线)";
             holder.getRoundImageView().setImageResource(R.mipmap.head_group);
         }else {
             User user=groups.get(groups.size()-1).getMambers().get(childPosition);

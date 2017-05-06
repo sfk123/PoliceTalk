@@ -1,10 +1,12 @@
 package com.sheng.android.policetalk.dao;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.sheng.android.policetalk.modal.DaoMaster;
 import com.sheng.android.policetalk.modal.DaoSession;
 
+import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
@@ -61,6 +63,10 @@ public class DaoManager {
         if (daoMaster == null) {
             helper = new DaoMaster.DevOpenHelper(mContext, DB_NAME, null);
             daoMaster = new DaoMaster(helper.getWritableDatabase());
+        }else if(!isTableExist(helper.getReadableDb())){
+            DaoMaster.dropAllTables(helper.getWritableDb(),true);
+            DaoMaster.createAllTables(helper.getWritableDb(),true);
+            daoMaster = new DaoMaster(helper.getWritableDatabase());
         }
         return daoMaster;
     }
@@ -107,7 +113,33 @@ public class DaoManager {
             helper = null;
         }
     }
+    private boolean isTableExist=false;
+    private boolean isTableExist(Database db) {
+        if (isTableExist) {
+            return true; // 上次操作已确定表已存在于数据库，直接返回true
+        }
+        Cursor cursor = null;
+        try {
+            String sql = "SELECT COUNT(*) AS c FROM sqlite_master WHERE type ='table' AND name ='Voice_Message' ";
+            cursor = db.rawQuery(sql, null);
+            if (cursor != null && cursor.moveToNext()) {
+                int count = cursor.getInt(0);
+                if (count > 0) {
+                    isTableExist = true; // 记录Table已创建，下次执行isTableExist()时，直接返回true
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = null;
+        }
+        return false;
 
+    }
     /**
      * 关闭所有的操作
      */

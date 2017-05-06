@@ -34,7 +34,9 @@ import com.sheng.android.policetalk.modal.User;
 import com.sheng.android.policetalk.util.HttpCallBack;
 import com.sheng.android.policetalk.util.HttpUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -74,9 +76,10 @@ public class PopupGroupMember extends PopupWindow implements SwipeItemOnItemChil
             }
         }
     };
-    public PopupGroupMember(Activity context, int top, OnDismissListener dismissListener, Group group, RecyclerArrayAdapter.OnItemClickListener onItemClickListener){
+    public PopupGroupMember(Activity context, int top, OnDismissListener dismissListener, Group group, RecyclerArrayAdapter.OnItemClickListener onItemClickListener,User currentUser){
         this.top=top;
         this.group=group;
+        this.currentUser=currentUser;
         this.context=context;
         this.onItemClickListener=onItemClickListener;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -107,9 +110,6 @@ public class PopupGroupMember extends PopupWindow implements SwipeItemOnItemChil
     public void notifyChanged(){
         adapter.notifyDataSetChanged();
     }
-    public void setCurrentUser(User user){
-        this.currentUser=user;
-    }
     private void initView(EasyRecyclerView recyclerView){
         SharedPreferences sharedPreferences = context.getSharedPreferences("wujay", Context.MODE_PRIVATE);
         String language=sharedPreferences.getString("language","中文");
@@ -138,7 +138,12 @@ public class PopupGroupMember extends PopupWindow implements SwipeItemOnItemChil
                 }
             }
         });
-        adapter.addAll(group.getMambers());
+        List<User> users=new ArrayList<>();
+        for(User u:group.getMambers()){
+            if(u.getId()!=currentUser.getId())
+                users.add(u);
+        }
+        adapter.addAll(users);
     }
 
     @Override

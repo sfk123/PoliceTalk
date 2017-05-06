@@ -370,6 +370,14 @@ public class FragmentMessage extends Fragment implements View.OnClickListener,Sw
 
     @Override
     public void onItemChildClick(ViewGroup var1, View var2, int position) {
+        if(conversations==null){
+            conversations=commonUtils.getConversationList(user.getId());
+        }
+        if(conversations==null){
+            if(getContext()!=null)
+            Toast.makeText(getContext(),"会话列表为空",Toast.LENGTH_SHORT).show();
+            return;
+        }
         final Conversation conversation=conversations.get(position);
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // 设置显示信息

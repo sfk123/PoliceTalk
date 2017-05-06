@@ -56,6 +56,13 @@ public class FragmentContacts extends Fragment implements ExpandableListView.OnC
     }
     public void setGroups(List<Group> groups){
         this.groups=groups;
+
+        for(User u:this.groups.get(groups.size()-1).getMambers()){
+            if(u.getId()==user.getId()) {
+                this.groups.get(groups.size() - 1).getMambers().remove(u);
+                break;
+            }
+        }
         sortUsers();
         adapter=new IdeasExpandableListAdapter(getContext(),groups);
         mlist.setAdapter(adapter);
